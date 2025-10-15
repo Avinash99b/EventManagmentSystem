@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import * as service from '../services/eventService';
+import * as service from '../services/eventService.js';
 
 const handleValidation = (req: Request) => {
   const errors = validationResult(req);

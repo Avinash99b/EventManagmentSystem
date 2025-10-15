@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import eventsRouter from './routes/events';
+import eventsRouter from './routes/events.js';
 
 const app = express();
 app.use(cors());

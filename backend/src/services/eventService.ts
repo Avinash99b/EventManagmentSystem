@@ -1,7 +1,7 @@
-import pool from '../db';
-import * as eventRepo from '../repos/eventRepo';
-import * as userRepo from '../repos/userRepo';
-import * as regRepo from '../repos/registrationRepo';
+import pool from '../db/index.js';
+import * as eventRepo from '../repos/eventRepo.js';
+import * as userRepo from '../repos/userRepo.js';
+import * as regRepo from '../repos/registrationRepo.js';
 import { Event } from '../models/types';
 
 export const createEvent = async (data: Omit<Event, 'id'>) => {
@@ -64,18 +64,15 @@ export const registerUser = async (eventId: string, name: string, email: string)
 
     if (current >= ev.capacity) throw { status: 400, message: 'Event is full' };
 
-    // ensure user exists
-    const user = await userRepo.createUser(name, email);
+  // ensure user exists
+  const user = await userRepo.createUser(name, email);
 
-    // check duplicate registration
-    const existsRes = await client.query('SELECT 1 FROM registrations WHERE event_id=$1 AND user_id=$2', [eventId, user.id]);
-    if(!existsRes || !existsRes.rowCount){
-        throw Error("Internal Error Occurred");
-    }
-    if (existsRes.rowCount > 0) throw { status: 400, message: 'User already registered' };
+  // check duplicate registration (should be zero rows before insert)
+  const existsRes = await client.query('SELECT 1 FROM registrations WHERE event_id=$1 AND user_id=$2', [eventId, user.id]);
+  if ((existsRes?.rowCount ?? 0) > 0) throw { status: 400, message: 'User already registered' };
 
-    // insert registration
-    await client.query('INSERT INTO registrations(event_id, user_id) VALUES($1,$2)', [eventId, user.id]);
+  // insert registration
+  await client.query('INSERT INTO registrations(event_id, user_id) VALUES($1,$2)', [eventId, user.id]);
 
     await client.query('COMMIT');
     return { user_id: user.id };

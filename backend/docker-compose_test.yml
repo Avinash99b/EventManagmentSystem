@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  db1:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: eventdb_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d

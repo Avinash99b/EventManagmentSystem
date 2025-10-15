@@ -1,4 +1,4 @@
-import { pool } from '../db';
+import { pool } from '../db/index.js';
 import { Registration } from '../models/types';
 
 export const addRegistration = async (client: any, r: Registration): Promise<void> => {
