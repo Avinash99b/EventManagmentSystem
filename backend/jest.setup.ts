@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
+// jest.setup runs in Node environment; __dirname is available
+
 
 // Load .env.test explicitly
 dotenv.config({ path: path.resolve(__dirname, '.env.test') });

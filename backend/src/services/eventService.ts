@@ -1,7 +1,7 @@
-import pool from '../db/index.js';
-import * as eventRepo from '../repos/eventRepo.js';
-import * as userRepo from '../repos/userRepo.js';
-import * as regRepo from '../repos/registrationRepo.js';
+import pool from '../db/index';
+import * as eventRepo from '../repos/eventRepo';
+import * as userRepo from '../repos/userRepo';
+import * as regRepo from '../repos/registrationRepo';
 import { Event } from '../models/types';
 
 export const createEvent = async (data: Omit<Event, 'id'>) => {

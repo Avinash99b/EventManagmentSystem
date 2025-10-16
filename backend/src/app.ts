@@ -1,12 +1,17 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import eventsRouter from './routes/events.js';
+import eventsRouter from './routes/events';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.use('/api/events', eventsRouter);
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', (_req: Request, res: Response) => res.json({ ok: true, service: 'Event Management API' }));
 

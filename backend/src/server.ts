@@ -1,8 +1,7 @@
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from "dotenv"
+// dotenv.config();
 
-// Import the built app with explicit extension so Node ESM can resolve it after tsc
-import app from './app.js';
+import app from './app';
 
 const PORT = process.env.PORT || 4000;
 

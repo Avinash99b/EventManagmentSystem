@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "nodemon --exec ts-node src/server.ts",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --runInBand",
+  "test": "jest --runInBand",
     "test:db": "docker-compose up -d db",
     "test:db:down": "docker-compose down -v"
   },
@@ -19,10 +19,12 @@
     "express-validator": "^6.15.0",
     "get-port": "^7.1.0",
     "jest": "^30.2.0",
+    "nodemon": "^3.1.10",
     "pg": "^8.11.0",
+    "swagger-ui-express": "^4.6.3",
     "ts-jest": "^29.4.5"
   },
-  "type": "module",
+  
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.17",
@@ -30,6 +32,7 @@
     "@types/node": "^20.5.1",
     "@types/pg": "^8.15.5",
     "@types/supertest": "^2.0.16",
+    "@types/swagger-ui-express": "^4.1.8",
     "supertest": "^6.3.3",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.2"

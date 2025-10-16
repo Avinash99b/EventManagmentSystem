@@ -1,8 +1,12 @@
-import dotenv from 'dotenv';
-dotenv.config();
-// Import the built app with explicit extension so Node ESM can resolve it after tsc
-import app from './app.js';
+"use strict";
+// import dotenv from "dotenv"
+// dotenv.config();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const app_1 = __importDefault(require("./app"));
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+app_1.default.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });

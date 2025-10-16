@@ -7,12 +7,16 @@ declare function afterAll(fn: () => Promise<void> | void): void;
 declare function beforeEach(fn: () => Promise<void> | void): void;
 declare var expect: any;
 
-import * as supertest from 'supertest';
+import supertest from 'supertest';
 const request = (supertest as any).default ?? supertest;
 import app from '../src/app';
 import dotenv from 'dotenv';
 import path from 'path';
 import { Pool } from 'pg';
+
+// tests run in Node environment; __dirname is available
+
+
 dotenv.config({ path: path.resolve(__dirname, '..', '.env.test') });
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
@@ -21,9 +25,7 @@ const clearAll = async () => {
 };
 
 beforeAll(async () => {
-  // ensure schema was applied in jest.setup.ts but double-check connectivity
   const client = await pool.connect();
-  // immediately release the client so pool.end() can terminate cleanly
   client.release();
 });
 
@@ -49,7 +51,6 @@ describe('Events API', () => {
   });
 
   test('get event details and list upcoming', async () => {
-    // Create event first
     const create = await request(app)
       .post('/api/events')
       .send({ title: 'List event', starts_at: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(), location: 'Hall B', capacity: 5 });

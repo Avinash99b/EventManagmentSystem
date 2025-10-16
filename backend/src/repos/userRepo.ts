@@ -1,4 +1,4 @@
-import { pool } from '../db/index.js';
+import { pool } from '../db/index';
 import { User } from '../models/types';
 
 export const createUser = async (name: string, email: string): Promise<User> => {

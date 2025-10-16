@@ -1,4 +1,4 @@
-import { pool } from '../db/index.js';
+import { pool } from '../db/index';
 import { Event } from '../models/types';
 
 export const createEvent = async (e: Omit<Event, 'id'>): Promise<{ id: string }> => {

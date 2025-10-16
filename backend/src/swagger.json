@@ -1,0 +1,119 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Event Management API",
+    "version": "0.1.0",
+    "description": "API for managing events and registrations"
+  },
+  "servers": [
+    { "url": "http://localhost:4000" }
+  ],
+  "paths": {
+    "/api/events": {
+      "post": {
+        "summary": "Create an event",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EventCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event created",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreatedId" } } }
+          },
+          "400": { "description": "Validation error" }
+        }
+      },
+      "get": {
+        "summary": "List upcoming events",
+        "responses": {
+          "200": {
+            "description": "Array of events",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Event" } } } }
+          }
+        }
+      }
+    },
+    "/api/events/{id}": {
+      "get": {
+        "summary": "Get event details",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }],
+        "responses": {
+          "200": { "description": "Event details", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EventWithRegistrations" } } } },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
+    "/api/events/{id}/stats": {
+      "get": {
+        "summary": "Get event stats",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }],
+        "responses": {
+          "200": { "description": "Stats", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Stats" } } } },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
+    "/api/events/{id}/register": {
+      "post": {
+        "summary": "Register a user for an event",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegisterRequest" } } } },
+        "responses": {
+          "201": { "description": "Registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegistrationResult" } } } },
+          "400": { "description": "Bad Request" },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
+    "/api/events/{id}/cancel": {
+      "post": {
+        "summary": "Cancel a user's registration",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CancelRequest" } } } },
+        "responses": {
+          "200": { "description": "Cancelled", "content": { "application/json": { "schema": { "type": "object", "properties": { "ok": { "type": "boolean" } } } } } },
+          "404": { "description": "Not found" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "starts_at": { "type": "string", "format": "date-time" },
+          "location": { "type": "string" },
+          "capacity": { "type": "integer", "minimum": 1 }
+        },
+        "required": ["id","title","starts_at","location","capacity"]
+      },
+      "EventCreate": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "starts_at": { "type": "string", "format": "date-time" },
+          "location": { "type": "string" },
+          "capacity": { "type": "integer", "minimum": 1, "maximum": 1000 }
+        },
+        "required": ["title","starts_at","location","capacity"]
+      },
+      "CreatedId": { "type": "object", "properties": { "id": { "type": "string", "format": "uuid" } }, "required": ["id"] },
+      "User": { "type": "object", "properties": { "id": { "type": "string", "format": "uuid" }, "name": { "type": "string" }, "email": { "type": "string", "format": "email" } }, "required": ["id","name","email"] },
+      "Registration": { "type": "object", "properties": { "event_id": { "type": "string" }, "user_id": { "type": "string" }, "registered_at": { "type": "string", "format": "date-time" } }, "required": ["event_id","user_id"] },
+      "EventWithRegistrations": { "allOf": [ { "$ref": "#/components/schemas/Event" }, { "type": "object", "properties": { "registrations": { "type": "array", "items": { "$ref": "#/components/schemas/UserRegistration" } } } } ] },
+      "UserRegistration": { "type": "object", "properties": { "id": { "type": "string", "format": "uuid" }, "name": { "type": "string" }, "email": { "type": "string", "format": "email" }, "registered_at": { "type": "string", "format": "date-time" } }, "required": ["id","name","email","registered_at"] },
+      "Stats": { "type": "object", "properties": { "total_registrations": { "type": "integer" }, "remaining_capacity": { "type": "integer" }, "percentage_used": { "type": "number" } }, "required": ["total_registrations","remaining_capacity","percentage_used"] },
+      "RegisterRequest": { "type": "object", "properties": { "name": { "type": "string" }, "email": { "type": "string", "format": "email" } }, "required": ["name","email"] },
+      "RegistrationResult": { "type": "object", "properties": { "user_id": { "type": "string", "format": "uuid" } }, "required": ["user_id"] },
+      "CancelRequest": { "type": "object", "properties": { "userId": { "type": "string", "format": "uuid" } }, "required": ["userId"] }
+    }
+  }
+}
